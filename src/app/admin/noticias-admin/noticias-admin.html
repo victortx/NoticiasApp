@@ -1,0 +1,84 @@
+<div class="container-fluid py-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="mb-0">Noticias <small class="text-muted" *ngIf="!isAdmin">(mis noticias)</small></h5>
+
+    <div class="d-flex align-items-center gap-2">
+      <a class="btn btn-primary btn-sm" (click)="openCreate()">
+        <i class="bi bi-plus-lg"></i> Nueva
+      </a>
+      <div class="btn-group">
+        <button class="btn btn-outline-secondary btn-sm"
+                [disabled]="!data?.previous || loading" (click)="prev()">← Anterior</button>
+        <button class="btn btn-outline-secondary btn-sm"
+                [disabled]="!data?.next || loading" (click)="next()">Siguiente →</button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border" role="status"></div>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <div class="table-responsive" *ngIf="!loading">
+    <table class="table table-hover align-middle">
+      <thead class="table-light">
+      <tr>
+        <th style="width: 64px;">ID</th>
+        <th style="width: 80px;">Miniatura</th>
+        <th>Título</th>
+        <th class="d-none d-md-table-cell">Categoría</th>
+        <th class="d-none d-lg-table-cell">Autor</th>
+        <th style="width: 180px;">Publicación</th>
+        <th class="text-end" style="width: 180px;">Acciones</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let n of data?.results; trackBy: trackById">
+        <td>{{ n.id }}</td>
+        <td>
+          <img *ngIf="n.miniatura; else noimg"
+               [src]="n.miniatura"
+               alt=""
+               style="width:64px;height:48px;object-fit:cover;border-radius:6px;">
+          <ng-template #noimg>
+            <div class="bg-light border rounded" style="width:64px;height:48px;"></div>
+          </ng-template>
+        </td>
+        <td>
+          <div class="fw-semibold">{{ n.titulo }}</div>
+          <div class="text-muted small d-none d-md-block">{{ n.descripcion }}</div>
+        </td>
+        <td class="d-none d-md-table-cell">{{ n.categoria?.nombre }}</td>
+        <td class="d-none d-lg-table-cell">{{ n.autor_nombre || ('#' + n.autor) }}</td>
+        <td>{{ n.fecha_publicacion | date:'medium' }}</td>
+        <td class="text-end">
+          <a class="btn btn-sm btn-outline-primary" [routerLink]="['/noticias', n.slug]">Ver</a>
+          <button class="btn btn-sm btn-outline-secondary ms-1" (click)="openEdit(n)">Editar</button>
+        </td>
+      </tr>
+
+      <tr *ngIf="!data?.results?.length">
+        <td colspan="7" class="text-center text-muted">No hay noticias.</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center mt-2" *ngIf="data">
+    <div class="small text-muted">Total: {{ data.count | number }}</div>
+    <div class="btn-group">
+      <button class="btn btn-outline-secondary btn-sm"
+              [disabled]="!data.previous || loading" (click)="prev()">← Anterior</button>
+      <button class="btn btn-outline-secondary btn-sm"
+              [disabled]="!data.next || loading" (click)="next()">Siguiente →</button>
+    </div>
+  </div>
+</div>
+
+<app-noticias-edit-modal
+  #editModal
+  (created)="reload()"
+  (updated)="reload()">
+</app-noticias-edit-modal>

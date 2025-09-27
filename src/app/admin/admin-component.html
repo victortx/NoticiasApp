@@ -1,0 +1,36 @@
+<div class="admin-wrapper d-flex">
+  <app-sidebar class="d-none d-md-block"></app-sidebar>
+
+  <div class="admin-content flex-grow-1">
+    <!-- Topbar simple -->
+    <nav class="navbar navbar-light bg-white border-bottom sticky-top px-3">
+      <button class="btn btn-outline-secondary d-md-none" type="button"
+              data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
+        <i class="bi bi-list"></i>
+      </button>
+      <span class="navbar-brand mb-0 h6">Panel de administración</span>
+      <div class="ms-auto d-flex align-items-center gap-2">
+        <span class="text-muted small d-none d-sm-inline">Hola, {{ (userName || 'admin') }}</span>
+        <!-- Botón salir (luego conecta a AuthService.logout()) -->
+        <button class="btn btn-sm btn-outline-danger" (click)="logout()">
+          <i class="bi bi-box-arrow-right"></i> Salir
+        </button>
+      </div>
+    </nav>
+
+    <main class="p-3 p-md-4">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
+
+<!-- Sidebar offcanvas para móvil -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasSidebarLabel">Menú</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+  </div>
+  <div class="offcanvas-body p-0">
+    <app-sidebar></app-sidebar>
+  </div>
+</div>

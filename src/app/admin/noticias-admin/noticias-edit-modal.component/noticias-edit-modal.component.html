@@ -1,0 +1,82 @@
+<div #modalEl class="modal fade" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ mode === 'create' ? 'Nueva noticia' : 'Editar noticia' }}</h5>
+        <button type="button" class="btn-close" (click)="close()" aria-label="Cerrar"></button>
+      </div>
+
+      <div class="modal-body">
+        <form (ngSubmit)="submit()" [formGroup]="form" novalidate>
+          <div class="row g-3">
+            <div class="col-12 col-md-8">
+              <label class="form-label" for="titulo">Título</label>
+              <input id="titulo" type="text" class="form-control" formControlName="titulo">
+              <div class="invalid-feedback d-block" *ngIf="form.controls['titulo'].touched && form.controls['titulo'].invalid">
+                Ingresa un título (mín. 3 caracteres).
+              </div>
+            </div>
+
+            <div class="col-12 col-md-4">
+              <label class="form-label" for="categoria">Categoría</label>
+              <select id="categoria" class="form-select" formControlName="categoria">
+                <option [ngValue]="null">Selecciona…</option>
+                <option *ngFor="let c of categorias" [ngValue]="c.id">{{ c.nombre }}</option>
+              </select>
+              <div class="invalid-feedback d-block" *ngIf="form.controls['categoria'].touched && form.controls['categoria'].invalid">
+                Selecciona una categoría.
+              </div>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label" for="descripcion">Descripción</label>
+              <textarea id="descripcion" class="form-control" rows="2" formControlName="descripcion"></textarea>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label" for="cuerpo">Cuerpo</label>
+              <textarea id="cuerpo" class="form-control" rows="6" formControlName="cuerpo"></textarea>
+              <div class="invalid-feedback d-block" *ngIf="form.controls['cuerpo'].touched && form.controls['cuerpo'].invalid">
+                El cuerpo debe tener al menos 10 caracteres.
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="form-label" for="fecha_publicacion">Fecha publicación</label>
+              <input id="fecha_publicacion" type="datetime-local" class="form-control" formControlName="fecha_publicacion">
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="form-label" for="miniatura">Miniatura (imagen)</label>
+              <input id="miniatura" type="file" accept="image/*" class="form-control" (change)="onMiniaturaChange($event)">
+              <div class="form-text">Opcional. Se cargará localmente (ImageField).</div>
+            </div>
+
+            <div class="col-12" *ngIf="imagePreview">
+              <img [src]="imagePreview" alt="preview" class="img-fluid rounded border" style="max-height: 180px; object-fit: cover;">
+            </div>
+
+            <div class="col-12">
+              <label class="form-label" for="hoja_estilo">Hoja de estilo (CSS)</label>
+              <textarea id="hoja_estilo" class="form-control" rows="3" formControlName="hoja_estilo" placeholder="/* CSS opcional para esta noticia */"></textarea>
+            </div>
+          </div>
+
+          <div class="alert alert-danger mt-3 py-2" *ngIf="errorMsg">{{ errorMsg }}</div>
+
+          <div class="d-flex justify-content-end gap-2 mt-3">
+            <button type="button" class="btn btn-outline-secondary" [disabled]="loading" (click)="close()">Cancelar</button>
+            <button type="submit" class="btn btn-primary" [disabled]="loading">
+              <span *ngIf="!loading">{{ mode === 'create' ? 'Guardar' : 'Actualizar' }}</span>
+              <span *ngIf="loading" class="d-inline-flex align-items-center gap-2">
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                {{ mode === 'create' ? 'Guardando…' : 'Actualizando…' }}
+              </span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
