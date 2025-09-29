@@ -3,6 +3,9 @@ import { RouterModule, Routes } from '@angular/router';
 import {Auth} from './auth';
 import {LoginComponent} from './login-component/login-component';
 import {Registro} from './registro/registro';
+import {ForgotComponent} from './forgot-component/forgot-component';
+import {ResetComponent} from './reset-component/reset-component';
+import {ChangePasswordComponent} from './change-password-component/change-password-component';
 
 const routes: Routes = [
   {
@@ -21,7 +24,10 @@ const routes: Routes = [
       }, {
         path: 'registro',
         component: Registro,
-      }
+      },
+      { path: 'forgot', component: ForgotComponent },
+      { path: 'reset', component: ResetComponent },
+      { path: 'change-password', component: ChangePasswordComponent },
     ]
   }
 ];

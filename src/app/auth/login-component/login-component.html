@@ -9,24 +9,29 @@
             <p class="text-body-secondary mb-0">Iniciar sesión</p>
           </div>
 
+          <!-- OPCIONAL: Login con Facebook -->
+
           <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
             <div class="mb-3">
-              <label for="email" class="form-label">Correo Electronico</label>
+              <label for="email" class="form-label">Correo electrónico</label>
               <input
                 id="email"
-                type="text"
+                type="email"
                 class="form-control"
                 formControlName="email"
-                placeholder="Tu usuario">
+                placeholder="tucorreo@dominio.com">
               <div class="invalid-feedback d-block" *ngIf="hasError('email','required')">
                 El correo es obligatorio.
               </div>
               <div class="invalid-feedback d-block" *ngIf="hasError('email','minlength')">
                 Debe tener al menos 3 caracteres.
               </div>
+              <div class="invalid-feedback d-block" *ngIf="hasError('email','email')">
+                Ingresa un correo válido.
+              </div>
             </div>
 
-            <div class="mb-3">
+            <div class="mb-2">
               <label for="password" class="form-label">Contraseña</label>
               <input
                 id="password"
@@ -40,6 +45,11 @@
               <div class="invalid-feedback d-block" *ngIf="hasError('password','minlength')">
                 Debe tener al menos 4 caracteres.
               </div>
+            </div>
+
+            <!-- Link recuperar contraseña -->
+            <div class="d-flex justify-content-end mb-3">
+              <a class="small" [routerLink]="['/auth/forgot']">¿Olvidaste tu contraseña?</a>
             </div>
 
             <button
@@ -62,8 +72,6 @@
             </div>
           </form>
 
-          <div class="text-center mt-4">
-          </div>
         </div>
       </div>
     </div>
