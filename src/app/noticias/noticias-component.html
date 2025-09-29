@@ -1,0 +1,146 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-semibold" [routerLink]="['/']">
+      <i class="bi bi-newspaper me-1"></i> Noticias
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navCategorias"
+            aria-controls="navCategorias" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navCategorias" class="collapse navbar-collapse">
+      <!-- Categorías -->
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" role="button"
+             [class.active]="!activeCat"
+             (click)="setCategory(null); fetch()">
+            Todas
+          </a>
+        </li>
+        <li class="nav-item" *ngFor="let c of categorias; trackBy: trackByCatId">
+          <a class="nav-link" role="button"
+             [class.active]="activeCat?.id === c.id"
+             (click)="setCategory(c); fetch()">
+            {{ c.nombre }}
+          </a>
+        </li>
+      </ul>
+
+      <!-- Buscador -->
+      <div class="d-flex align-items-center gap-2">
+        <form class="d-flex" (submit)="$event.preventDefault(); fetch()">
+          <div class="input-group input-group-sm">
+            <input class="form-control" type="search" name="q" autocomplete="off"
+                   placeholder="Buscar noticias…" [(ngModel)]="search"
+                   (keydown.enter)="fetch()">
+            <button class="btn btn-outline-secondary" type="button" (click)="fetch()">
+              <i class="bi bi-search"></i>
+            </button>
+          </div>
+        </form>
+
+        <!-- Botón de Iniciar sesión -->
+        <a class="btn btn-outline-primary btn-sm"
+           [routerLink]="['/auth/login']">
+          <i class="bi bi-box-arrow-in-right me-1"></i>
+          Iniciar sesión
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- CONTENIDO -->
+<div class="container py-3">
+
+  <!-- Barra superior: orden + paginación -->
+  <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3">
+    <div class="small text-muted">Total: {{ data?.count || 0 | number }}</div>
+
+    <div class="d-flex align-items-center gap-2">
+      <select class="form-select form-select-sm" style="width: 200px;"
+              [(ngModel)]="ordering" (change)="fetch()">
+        <option value="-fecha_publicacion">Más recientes</option>
+        <option value="fecha_publicacion">Más antiguas</option>
+        <option value="-fecha_creacion">Nuevas (creación)</option>
+        <option value="titulo">Título (A→Z)</option>
+        <option value="-titulo">Título (Z→A)</option>
+      </select>
+
+      <div class="btn-group btn-group-sm">
+        <button class="btn btn-outline-secondary"
+                [disabled]="!data?.previous || loading"
+                (click)="prev()">← Anterior</button>
+        <button class="btn btn-outline-secondary"
+                [disabled]="!data?.next || loading"
+                (click)="next()">Siguiente →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading / Error -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border" role="status"></div>
+  </div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <!-- GRID DE CARDS -->
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3" *ngIf="!loading">
+    <div class="col" *ngFor="let n of data?.results; trackBy: trackById">
+      <div class="card h-100 shadow-sm border-0">
+
+        <!-- Imagen / placeholder -->
+        <div class="position-relative">
+          <div class="ratio ratio-16x9 bg-light">
+            <img *ngIf="n.miniatura; else sinImg"
+                 [src]="n.miniatura"
+                 class="w-100 h-100" style="object-fit: cover;" alt="">
+          </div>
+          <ng-template #sinImg>
+            <div class="d-flex align-items-center justify-content-center w-100 h-100 text-muted">
+              <div class="py-5">Sin imagen</div>
+            </div>
+          </ng-template>
+
+          <!-- Badge de categoría -->
+          <span class="badge text-bg-secondary position-absolute top-0 start-0 m-2">
+            {{ n.categoria?.nombre || '—' }}
+          </span>
+        </div>
+
+        <div class="card-body">
+          <h5 class="card-title mb-1">
+            <a class="stretched-link text-decoration-none"
+               [routerLink]="['/noticias', n.id]">
+              {{ n.titulo }}
+            </a>
+          </h5>
+          <div class="text-muted small mb-2">
+            {{ n.fecha_publicacion | date:'mediumDate' }} • {{ n.autor_nombre || ('#' + n.autor) }}
+          </div>
+          <p class="card-text text-body-secondary mb-0">
+            {{ n.descripcion }}
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Vacío -->
+    <div class="col-12" *ngIf="!data?.results?.length">
+      <div class="text-center text-muted py-5">No hay noticias para mostrar.</div>
+    </div>
+  </div>
+
+  <!-- Paginación inferior -->
+  <div class="d-flex justify-content-center mt-4" *ngIf="data && (data.next || data.previous)">
+    <div class="btn-group">
+      <button class="btn btn-outline-secondary btn-sm"
+              [disabled]="!data?.previous || loading" (click)="prev()">← Anterior</button>
+      <button class="btn btn-outline-secondary btn-sm"
+              [disabled]="!data?.next || loading" (click)="next()">Siguiente →</button>
+    </div>
+  </div>
+</div>

@@ -28,7 +28,7 @@ export class NoticiasAdminService {
     titulo: string;
     descripcion?: string;
     cuerpo: string;
-    categoria: number;              // enviamos ID
+    categoria_id: number;              // enviamos ID
     fecha_publicacion?: string | null; // ISO
     hoja_estilo?: string;
     miniatura?: File | null;
@@ -42,7 +42,7 @@ export class NoticiasAdminService {
     titulo: string;
     descripcion?: string;
     cuerpo: string;
-    categoria: number;
+    categoria_id: number;
     fecha_publicacion?: string | null;
     hoja_estilo?: string;
     miniatura?: File | null;  // si no mandas, se conserva; si mandas null en DRF, debes manejarlo en backend
@@ -57,8 +57,8 @@ export class NoticiasAdminService {
       if (v === undefined) return;
       if (k === 'miniatura') {
         if (v instanceof File) fd.append('miniatura', v); // solo si hay archivo nuevo
-      } else if (k === 'categoria' && typeof v === 'number') {
-        fd.append('categoria', String(v)); // id de categoría
+      } else if (k === 'categoria_id' && typeof v === 'number') {
+        fd.append('categoria_id', String(v)); // id de categoría
       } else if (v === null) {
         fd.append(k, ''); // según cómo manejes null en tu serializer
       } else {

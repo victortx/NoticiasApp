@@ -10,6 +10,7 @@ import {RouterModule} from '@angular/router';
 import {CategoriasService} from '../services/categorias-service';
 import {NoticiasAdminService} from '../services/noticias-admin-service';
 import {NoticiasEditModalComponent} from './noticias-admin/noticias-edit-modal.component/noticias-edit-modal.component';
+import {UsuariosAdminService} from '../services/usuarios-admin-service';
 
 
 @NgModule({
@@ -25,7 +26,7 @@ import {NoticiasEditModalComponent} from './noticias-admin/noticias-edit-modal.c
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AdminAuthInterceptor, multi: true },
-    CategoriasService, NoticiasAdminService
+    CategoriasService, NoticiasAdminService, UsuariosAdminService
   ]
 })
 export class AdminModule { }

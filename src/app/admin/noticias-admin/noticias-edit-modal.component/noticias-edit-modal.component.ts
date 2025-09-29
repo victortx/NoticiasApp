@@ -133,7 +133,7 @@ export class NoticiasEditModalComponent implements OnInit {
       titulo: v.titulo as string,
       descripcion: (v.descripcion || '') as string,
       cuerpo: v.cuerpo as string,
-      categoria: Number(v.categoria),
+      categoria_id: Number(v.categoria),
       fecha_publicacion: this.localDTToIso(v.fecha_publicacion || null),
       hoja_estilo: (v.hoja_estilo || '') as string,
       miniatura: this.imageFile || undefined,

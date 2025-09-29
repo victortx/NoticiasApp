@@ -4,6 +4,7 @@ import {HttpClient} from '@angular/common/http';
 import {map, Observable, Subscription, switchMap, tap, throwError, timer} from 'rxjs';
 import {JwtTokens, LoginRequest, LoginResponse, LoginResponseShape, UserInfo} from '../../Types/AuthTypes';
 import {getExpMs, isExpired} from '../../utils/jwt-utils';
+import {RegisterPayload, RegisterResponse} from '../../Types/UsuariosTypes';
 
 @Injectable({
   providedIn: 'root'
@@ -39,6 +40,17 @@ export class AuthService {
         rol: res.role,
       }))
     );
+  }
+
+  register(payload: RegisterPayload): Observable<RegisterResponse> {
+    return this.http.post<RegisterResponse>(
+      `${this.baseAPI}auth/register/`,
+      payload
+    );
+  }
+
+  facebookRegister(body: { fb_access_token: string; telefono?: string }) {
+    return this.http.post(`${this.baseAPI}auth/facebook/register/`, body);
   }
 
   private persistSession(access: string, refresh: string, user: UserInfo) {

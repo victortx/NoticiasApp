@@ -1,0 +1,104 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-semibold" [routerLink]="['/']">
+      <i class="bi bi-newspaper me-1"></i> Noticias
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navCategorias"
+            aria-controls="navCategorias" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navCategorias" class="collapse navbar-collapse">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/noticias']">Todas</a>
+        </li>
+        <li class="nav-item" *ngFor="let c of categorias; trackBy: trackByCatId">
+          <!-- si quieres filtrar por categoría en listado via queryParams -->
+          <a class="nav-link" [routerLink]="['/noticias']" [queryParams]="{ cat: c.id }">
+            {{ c.nombre }}
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- CONTENIDO -->
+<div class="container py-3" *ngIf="!loading; else loadingTpl">
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <ng-container *ngIf="noticia as n">
+    <!-- Cabecera con imagen grande -->
+    <div class="row g-3">
+      <div class="col-12">
+        <div class="card shadow-sm border-0">
+          <div class="position-relative">
+            <div class="ratio ratio-16x9 bg-light">
+              <img *ngIf="n.miniatura; else sinImg" [src]="n.miniatura" class="w-100 h-100" style="object-fit: cover;" alt="">
+            </div>
+            <ng-template #sinImg>
+              <div class="d-flex align-items-center justify-content-center w-100 h-100 text-muted">Sin imagen</div>
+            </ng-template>
+
+            <span class="badge text-bg-secondary position-absolute top-0 start-0 m-2">
+              {{ n.categoria?.nombre || '—' }}
+            </span>
+          </div>
+
+          <div class="card-body">
+            <h1 class="h3 mb-2">{{ n.titulo }}</h1>
+            <div class="text-muted mb-3">
+              {{ n.fecha_publicacion | date:'fullDate' }} · {{ n.autor_nombre || ('#' + n.autor) }}
+            </div>
+
+            <!-- Cuerpo (puede traer HTML) -->
+            <div class="content" [innerHTML]="n.cuerpo"></div>
+
+            <!-- (Opcional) Inyectar CSS específico si usas hoja_estilo -->
+            <ng-container *ngIf="n.hoja_estilo">
+              <style>{{ n.hoja_estilo }}</style>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recomendados -->
+    <div class="mt-4">
+      <h5 class="mb-3">Recomendados</h5>
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3">
+        <div class="col" *ngFor="let r of recomendados; trackBy: trackById">
+          <div class="card h-100 shadow-sm border-0">
+            <div class="ratio ratio-16x9 bg-light">
+              <img *ngIf="r.miniatura; else rNoImg" [src]="r.miniatura" class="w-100 h-100" style="object-fit: cover;" alt="">
+            </div>
+            <ng-template #rNoImg>
+              <div class="d-flex align-items-center justify-content-center w-100 h-100 text-muted">Sin imagen</div>
+            </ng-template>
+            <div class="card-body">
+              <div class="small text-muted mb-1">{{ r.categoria?.nombre || '—' }}</div>
+              <h6 class="card-title">
+                <a class="stretched-link text-decoration-none" [routerLink]="['/noticias', r.id]">
+                  {{ r.titulo }}
+                </a>
+              </h6>
+              <p class="card-text text-body-secondary small mb-0">{{ r.descripcion }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12" *ngIf="!recomendados?.length">
+          <div class="text-muted">No hay recomendaciones.</div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #loadingTpl>
+  <div class="text-center py-5">
+    <div class="spinner-border" role="status"></div>
+  </div>
+</ng-template>

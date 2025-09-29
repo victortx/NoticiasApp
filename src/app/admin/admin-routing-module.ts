@@ -14,6 +14,11 @@ const routes: Routes = [{
       path: 'noticias',
       loadChildren: () => import('./noticias-admin/noticias-admin-module')
         .then(m => m.NoticiasAdminModule)
+    },
+    {
+      path: 'usuarios',
+      loadChildren: () => import('./usuarios/usuarios-module')
+        .then(m => m.UsuariosModule)
     }
   ]
 }];

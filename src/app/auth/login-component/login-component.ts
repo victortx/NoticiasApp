@@ -17,7 +17,7 @@ export class LoginComponent {
 
   constructor(private fb: FormBuilder, private router: Router, private auth: AuthService) {
     this.form = this.fb.group({
-      username: ['', [Validators.required]],
+      email: ['', [Validators.required]],
       password: ['', [Validators.required]],
     });
   }
@@ -28,7 +28,6 @@ export class LoginComponent {
     if (this.form.invalid) { this.form.markAllAsTouched(); return; }
 
     this.isSubmitting = true;
-    debugger;
     this.auth.login(this.form.value as any).subscribe({
       next: () => this.router.navigateByUrl('/dashboard'),
       error: err => {
@@ -38,7 +37,7 @@ export class LoginComponent {
     });
   }
 
-  hasError(ctrl: 'username' | 'password', err: string) {
+  hasError(ctrl: 'email' | 'password', err: string) {
     const c = this.form.controls[ctrl];
     return c.touched && c.hasError(err);
   }
